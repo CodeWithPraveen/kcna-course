@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: brezyweather-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: brezyweather
+      version: '1.0'
+  template:
+    metadata:
+      labels:
+        app: brezyweather
+        version: '1.0'
+    spec:
+      containers:
+      - name: brezyweather
+        image: codewithpraveen/labs-k8s-healthprobes:1.0
+        resources:
+          limits:
+            memory: 128Mi # MiB or Mebibytes
+            cpu: 100m # millicores
+        ports:
+        - name: app-port
+          containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /api/v1/health/live
+            port: app-port
+          initialDelaySeconds: 5  # Delay before the probe starts
+          periodSeconds: 10  # Probe runs every 10 seconds

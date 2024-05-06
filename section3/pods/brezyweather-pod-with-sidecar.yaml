@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: brezyweather-pod-sidecar
+spec:
+  containers:
+  - image: codewithpraveen/labs-k8s-brezyweather:1.0
+    name: brezyweather-pod
+    ports:
+    - containerPort: 80
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+  - name: sidecar-monitor-logs
+    image: busybox:1.36
+    resources:
+      limits:
+        memory: "64Mi"
+        cpu: "100m"
+    command: ["/bin/sh", "-c"]
+    args: ["while true; do if [ \"$(cat /var/log/nginx/error.log | grep 'error')\" != \"\" ]; then echo 'Error discovered!'; fi; sleep 10; done"]
+    volumeMounts:
+    - name: shared-dir
+      mountPath: /var/log/nginx
+  volumes:
+  - name: shared-dir
+    emptyDir: {}

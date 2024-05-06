@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: brezyweather-pod
+spec:
+  containers:
+  - image: codewithpraveen/labs-k8s-brezyweather:1.0
+    name: brezyweather-pod
+    ports:
+    - containerPort: 80
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi

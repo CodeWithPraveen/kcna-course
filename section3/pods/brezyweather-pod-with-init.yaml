@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: brezyweather-pod-init
+spec:
+  containers:
+  - image: codewithpraveen/labs-k8s-brezyweather:1.0
+    name: brezyweather-pod
+    ports:
+    - containerPort: 80
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+  initContainers:
+  - name: init-sleep
+    image: busybox:1.36
+    command: ['sh', '-c', 'sleep 10']
+  - name: init-setup-service
+    image: busybox:1.36
+    command: ['sh', '-c', 'until nslookup brezyweather.staging.svc.cluster.local; do echo waiting for brezyweather service; sleep 1; done']
